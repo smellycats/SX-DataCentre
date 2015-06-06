@@ -3,13 +3,10 @@ import time
 
 from peewee import *
 
-from app import db
+from app import db, db2
 
 
 class BaseModel(Model):
-    class Meta:
-        database = db
-
     @classmethod
     def get_one(cls, *query, **kwargs):
         # 为了方便使用，新增此接口，查询不到返回None，而不抛出异常
@@ -24,15 +21,15 @@ class Users(BaseModel):
     password = CharField()
     banned = BooleanField(default=False)
 
+    class Meta:
+        database = db
+
 
 class Carinfo(BaseModel):
-    passtime = IntegerField(default=int(time.time()))
-    ip = TextField()
+    passtime = IntegerField(index=True)
+    ip = CharField()
     place = IntegerField()
     content = TextField()
 
     class Meta:
-        indexes = (
-            # create a non-unique on timeflag
-            (['passtime'], False),
-        )
+        database = db
